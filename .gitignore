@@ -1,0 +1,44 @@
+# Byte-compiled / cache files
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# VSCode settings
+.vscode/
+
+# Python virtual environments
+env/
+venv/
+.brfs_env/
+*.env
+
+# Conda environment backups
+*.yml~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Raw data – large files you don't want in version control
+data/raw/
+
+# Optional: ignore large report graphics if they're reproducible
+# reports/*.png
+
+# Optional: ignore any logs
+*.log
+
+# Optional: ignore coverage data
+htmlcov/
+coverage.xml
+.cache/
+codecov.yml
+
+# Jupyter Notebook execution artifacts
+*.nbconvert.ipynb
+
