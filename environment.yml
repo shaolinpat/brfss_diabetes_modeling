@@ -16,3 +16,5 @@ dependencies:
   - pip:
       - imbalanced-learn==0.13.0
       - xgboost
+      - shap
+      - yellowbrick

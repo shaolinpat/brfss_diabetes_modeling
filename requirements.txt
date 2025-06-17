@@ -7,3 +7,5 @@ xgboost
 matplotlib
 jupyter
 nbconvert
+shap
+yellowbrick
