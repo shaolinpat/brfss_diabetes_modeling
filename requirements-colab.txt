@@ -1,0 +1,13 @@
+pandas
+numpy
+seaborn
+scikit-learn==1.6.1
+imbalanced-learn==0.13.0
+xgboost
+matplotlib
+jupyter
+nbconvert
+shap
+yellowbrick
+joblib
+ipykernel
