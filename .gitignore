@@ -23,6 +23,10 @@ venv/
 # OS files
 .DS_Store
 Thumbs.db
+os
+sys
+scripts/os
+scripts/sys
 
 # Raw data – large files you don't want in version control
 data/raw/

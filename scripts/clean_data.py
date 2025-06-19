@@ -88,7 +88,15 @@ def main():
         )
 
         # ----------------------------------------------------------------------
-        # 9. Output the columns, shape, number of rows lost
+        # 9. Make sure the target column "diabetes" is last
+        # ----------------------------------------------------------------------
+        target = "diabetes"
+        if target in df.columns:
+            cols = [col for col in df.columns if col != target] + [target]
+            df = df[cols]
+
+        # ----------------------------------------------------------------------
+        # 10. Output the columns, shape, number of rows lost
         # ----------------------------------------------------------------------
         print(f"Columns after: {df.columns}")
         print(f"DataFrame shape after: {df.shape}")
@@ -97,7 +105,7 @@ def main():
         )
 
         # ----------------------------------------------------------------------
-        # 10. Save the cleaned DataFrame
+        # 111. Save the cleaned DataFrame
         # ----------------------------------------------------------------------
         df.to_csv(out_path, index=False)
         print(f"Saved clean data to {out_path}")

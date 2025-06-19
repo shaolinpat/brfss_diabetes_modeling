@@ -63,6 +63,17 @@ if __name__ == "__main__":
         # 4. Subset
         df_subset = subset_variables(df_raw, get_vars_to_keep(year))
 
+        # Move 'diabetes' column to the end if it's present
+        if "DIABETE4" in df_subset.columns:
+            cols = [col for col in df_subset.columns if col != "DIABETE4"] + [
+                "DIABETE4"
+            ]
+            df_subset = df_subset[cols]
+
+            print(f"Rewritten with target last: {out_path}")
+        else:
+            print(f"'DIABETE4' not found in: {out_path}")
+
         # 5. Save to disk
         df_subset.to_csv(out_path, index=False)
         print(f"Saved subset to {out_path}")
