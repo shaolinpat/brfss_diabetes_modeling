@@ -21,6 +21,9 @@ def main():
             os.path.dirname(__file__), f"../data/cleaned/brfss_cleaned_{year}.csv"
         )
 
+        out_colab_path = os.path.join(
+            os.path.dirname(__file__), f"../notebooks/data/brfss_cleaned_{year}.csv"
+        )
         # ----------------------------------------------------------------------
         # 2. Load subset
         # ----------------------------------------------------------------------
@@ -105,10 +108,17 @@ def main():
         )
 
         # ----------------------------------------------------------------------
-        # 111. Save the cleaned DataFrame
+        # 11. Save the cleaned DataFrame
         # ----------------------------------------------------------------------
+        # Ensure output directories exist
+        os.makedirs(os.path.dirname(out_path), exist_ok=True)
+        os.makedirs(os.path.dirname(out_colab_path), exist_ok=True)
+
         df.to_csv(out_path, index=False)
         print(f"Saved clean data to {out_path}")
+
+        df.to_csv(out_colab_path, index=False)
+        print(f"Saved clean data to colab-friendly path: {out_colab_path}")
 
 
 if __name__ == "__main__":
