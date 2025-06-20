@@ -1,6 +1,6 @@
 # BRFSS Diabetes Modeling
 
-[![CI](https://github.com/shaolinpat/brfss_diabetes_cleaning/actions/workflows/ci.yml/badge.svg)](https://github.com/shaolinpat/brfss_diabetes_cleaning/actions/workflows/ci.yml)
+[![CI](https://github.com/shaolinpat/brfss_diabetes_modeling/actions/workflows/ci.yml/badge.svg)](https://github.com/shaolinpat/brfss_diabetes_modeling/actions/workflows/ci.yml)
 [![Coverage (flag)](https://img.shields.io/codecov/c/github/shaolinpat/brfss_diabetes_cleaning.svg?flag=flower_classifier&branch=main)](https://codecov.io/gh/shaolinpat/brfss_diabetes_cleaning)  
 [![Python 3.11](https://img.shields.io/badge/python-3.11-blue.svg)](https://www.python.org/downloads/release/python-3110/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
@@ -31,6 +31,7 @@ An end-to-end Iris-dataset classifier with EDA, 8 models, SHAP interpretation, a
 ---
 
 ## Visual Highlights
+
 
 
 ---
