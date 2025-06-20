@@ -9,3 +9,4 @@ jupyter
 nbconvert
 shap
 yellowbrick
+pytest-cov
