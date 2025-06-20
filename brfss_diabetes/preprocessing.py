@@ -24,6 +24,14 @@ def recode_missing(df, column, missing_codes):
             f"Column '{column}' not found in DataFrame columns: {list(df.columns)}"
         )
 
+    if not isinstance(column, str):
+        raise ValueError(f"`column` must be a string, got {type(column)}")
+
+    if not isinstance(missing_codes, (list, set, tuple)):
+        raise ValueError(
+            f"`missing_codes` must be a list, set, or tuple, got {type(missing_codes)}"
+        )
+
     missing_codes = set(missing_codes)
 
     df[column] = df[column].replace(missing_codes, pd.NA)
@@ -50,6 +58,25 @@ def recode_binary(df, column, yes_codes=[1], no_codes=[2]):
     if column not in df.columns:
         raise KeyError(
             f"Column '{column}' not found in DataFrame columns: {list(df.columns)}"
+        )
+
+    if not isinstance(column, str):
+        raise ValueError(f"`column` must be a string, got {type(column)}")
+
+    if not isinstance(yes_codes, (list, set, tuple)):
+        raise ValueError(
+            f"`yes_codes` must be a list, set, or tuple, got {type(yes_codes)}"
+        )
+
+    if not isinstance(no_codes, (list, set, tuple)):
+        raise ValueError(
+            f"`no_codes` must be a list, set, or tuple, got {type(no_codes)}"
+        )
+
+    overlap = set(yes_codes) & set(no_codes)
+    if overlap:
+        raise ValueError(
+            f"`yes_codes` and `no_codes` have overlapping values: {overlap}"
         )
 
     yes_codes = set(yes_codes)
@@ -95,8 +122,11 @@ def normalize_numeric(df, column, new_column):
             f"Column '{column}' not found in DataFrame columns: {list(df.columns)}"
         )
 
+    if not isinstance(column, str):
+        raise ValueError(f"`column` must be a string, got {type(column)}")
+
     if not isinstance(new_column, str):
-        raise ValueError(f"`new_name` must be a string, got {type(new_column)}")
+        raise ValueError(f"`new_column` must be a string, got {type(new_column)}")
 
     df[new_column] = df[column].map(AGE_CATEGORY_MIDPOINTS).astype("Float64")
 
@@ -124,8 +154,11 @@ def convert_implied_decimal(df, column="_BMI", new_column="BMI"):
             f"Column '{column}' not found in DataFrame columns: {list(df.columns)}"
         )
 
+    if not isinstance(column, str):
+        raise ValueError(f"`column` must be a string, got {type(column)}")
+
     if not isinstance(new_column, str):
-        raise ValueError(f"`new_name` must be a string, got {type(new_column)}")
+        raise ValueError(f"`new_column` must be a string, got {type(new_column)}")
 
     # 1. Convert to numeric first, safely
     df[column] = pd.to_numeric(df[column], errors="coerce")
@@ -156,7 +189,7 @@ def recode_bmi_category(df, column="_BMI5CAT", new_column="BMI_CAT"):
     Parameters:
         df: DataFrame
         column: str — column whose values to convert
-        new_name: what to call the column after converting
+        new_column: what to call the column after converting
 
     Returns:
         DataFrame with recoded column (new_name, value: Normal, where the old value as 2)
@@ -170,8 +203,11 @@ def recode_bmi_category(df, column="_BMI5CAT", new_column="BMI_CAT"):
             f"Column '{column}' not found in DataFrame columns: {list(df.columns)}"
         )
 
+    if not isinstance(column, str):
+        raise ValueError(f"`column` must be a string, got {type(column)}")
+
     if not isinstance(new_column, str):
-        raise ValueError(f"`new_name` must be a string, got {type(new_column)}")
+        raise ValueError(f"`new_column` must be a string, got {type(new_column)}")
 
     bmi_mapping = {1: "Underweight", 2: "Normal", 3: "Overweight", 4: "Obese"}
 
