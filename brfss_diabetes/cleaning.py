@@ -11,6 +11,10 @@ from .preprocessing import (
 
 
 def clean_common_fields(df: pd.DataFrame) -> pd.DataFrame:
+
+    if not isinstance(df, pd.DataFrame):
+        raise ValueError(f"`df` must be a pandas DataFrame, got {type(df)}")
+
     # Diabetes uses 7/8/9 for missing
     df = recode_missing(df, "DIABETE4", [7, 8, 9])
     df = recode_binary(df, "DIABETE4", yes_codes=[1, 2], no_codes=[3, 4])
@@ -54,6 +58,12 @@ def clean_common_fields(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def clean_year_specific(df, year):
+    if not isinstance(df, pd.DataFrame):
+        raise ValueError(f"`df` must be a pandas DataFrame, got {type(df)}")
+
+    if not isinstance(year, int):
+        raise ValueError(f"`year` must be an int, got {type(df)}")
+
     if year in [2019, 2020, 2021]:
         df = recode_missing(df, "DRNKANY5", [7, 9])
         df = recode_binary(df, "DRNKANY5", yes_codes=[1], no_codes=[2])
@@ -90,6 +100,12 @@ def clean_year_specific(df, year):
 
 
 def clean_brfss(df: pd.DataFrame, year: int) -> pd.DataFrame:
+    if not isinstance(df, pd.DataFrame):
+        raise ValueError(f"`df` must be a pandas DataFrame, got {type(df)}")
+
+    if not isinstance(year, int):
+        raise ValueError(f"`year` must be an int, got {type(df)}")
+
     df = clean_common_fields(df)
     df = clean_year_specific(df, year)
     df["year"] = year
