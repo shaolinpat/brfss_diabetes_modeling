@@ -3,15 +3,17 @@
 from setuptools import setup, find_packages
 
 setup(
-    name="flower_classifier",
+    name="brfss_diabetes",  # ← renamed
     version="0.1.0",
-    packages=find_packages(),
+    packages=find_packages(include=["brfss_diabetes", "brfss_diabetes.*"]),
     install_requires=[
-        "matplotlib",
         "pandas",
         "scikit-learn",
-        "streamlit",
+        "xgboost",
+        "matplotlib",
+        "seaborn",
         "shap",
-        # …any other deps you need
+        "numpy",
     ],
 )
+

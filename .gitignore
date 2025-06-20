@@ -46,3 +46,6 @@ codecov.yml
 # Jupyter Notebook execution artifacts
 *.nbconvert.ipynb
 
+# Installer metadata
+*.egg-info/
+brfss_diabetes.egg-info/
