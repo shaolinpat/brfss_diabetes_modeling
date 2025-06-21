@@ -1,8 +1,57 @@
 # tests/test_io.py
 
 import pandas as pd
+from pathlib import Path
 import pytest
-from brfss_diabetes.io import finalize_columns
+import sys
+from unittest.mock import patch, MagicMock
+
+from brfss_diabetes.io import get_csv, finalize_columns
+
+
+# ------------------------------------------------------------------------------
+# testing def get_csv(year, data_dir=Path("../data/cleaned"))
+# ------------------------------------------------------------------------------
+
+
+def test_get_csv_raises_on_non_integer_year():
+    with pytest.raises(ValueError, match="`year` must be an int"):
+        get_csv("2020")  # string instead of int
+
+
+def test_get_csv_raises_on_invalid_data_dir_type():
+    with pytest.raises(ValueError, match="`data_dir` must be a pathlib.Path"):
+        get_csv(2020, data_dir="not_a_path")
+
+
+def test_get_csv_reads_local_file(monkeypatch):
+    monkeypatch.setitem(sys.modules, "not_colab", MagicMock())  # simulate non-Colab
+
+    with patch("pandas.read_csv") as mock_read_csv:
+        mock_df = pd.DataFrame({"a": [1, 2]})
+        mock_read_csv.return_value = mock_df
+
+        df = get_csv(2020, data_dir=Path("/some/path"))
+        assert df.equals(mock_df)
+        mock_read_csv.assert_called_once()
+
+
+def test_get_csv_reads_from_github_in_colab(monkeypatch):
+    monkeypatch.setitem(sys.modules, "google.colab", MagicMock())  # simulate Colab
+
+    with patch("pandas.read_csv") as mock_read_csv:
+        mock_df = pd.DataFrame({"a": [1, 2]})
+        mock_read_csv.return_value = mock_df
+
+        df = get_csv(2021)
+        assert df.equals(mock_df)
+        mock_read_csv.assert_called_once()
+        assert "raw.githubusercontent.com" in mock_read_csv.call_args[0][0]
+
+
+# ------------------------------------------------------------------------------
+# testing def finalize_columns(df, keep_cols: list[str]) -> pd.DataFrame
+# ------------------------------------------------------------------------------
 
 
 def test_finalize_columns_keeps_only_specified_columns():

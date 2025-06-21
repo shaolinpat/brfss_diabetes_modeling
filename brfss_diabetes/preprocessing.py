@@ -214,3 +214,27 @@ def recode_bmi_category(df, column="_BMI5CAT", new_column="BMI_CAT"):
     df[new_column] = df[column].map(bmi_mapping).astype("category")
 
     return df
+
+
+def move_column_to_end(df, column):
+    """
+    Moves the specified column to the end of the DataFrame if it exists.
+
+    Parameters:
+        df (pd.DataFrame): Input DataFrame.
+        column (str): Column name to move.
+
+    Returns:
+        pd.DataFrame: DataFrame with the specified column at the end.
+    """
+
+    if not isinstance(df, pd.DataFrame):
+        raise ValueError(f"`df` must be a pandas DataFrame, got {type(df)}")
+
+    if not isinstance(column, str):
+        raise ValueError(f"`column` must be a string, got {type(column)}")
+
+    if column not in df.columns:
+        return df
+    cols = [col for col in df.columns if col != column] + [column]
+    return df[cols]

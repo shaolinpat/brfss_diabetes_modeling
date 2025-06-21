@@ -8,9 +8,10 @@ from brfss_diabetes import preprocessing as pp
 
 print(brfss_diabetes.__file__)
 
-# -------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
 # testing def recode_missing(df, column, missing_codes)
-# -------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 
 def test_recode_missing():
@@ -63,9 +64,9 @@ def test_recode_missing_with_unmatched_code():
     pdt.assert_series_equal(result["col"], expected)
 
 
-# -------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # testing def recode_binary(df, column, yes_codes=[1], no_codes=[2])
-# -------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 
 def test_recode_binary():
@@ -133,9 +134,9 @@ def test_recode_binary_invalid_no_code_type():
         pp.recode_binary(df, "col", yes_codes=[1], no_codes=2)  # no_codes not iterable
 
 
-# -------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # testing def normalize_numeric(df, column, new_column)
-# -------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 
 def test_normalize_numeric():
@@ -175,9 +176,9 @@ def test_normalize_numeric_raises_on_new_column_wrong_type():
         pp.normalize_numeric(df, column="age_code", new_column=7)
 
 
-# -------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # testing def convert_implied_decimal(df, column="_BMI", new_column="BMI")
-# -------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 
 def test_convert_implied_decimal():
@@ -215,9 +216,9 @@ def test_convert_implied_decimal_raises_on_new_column_wrong_type():
         pp.convert_implied_decimal(df, column="_bmi", new_column=7)
 
 
-# -------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # testing recode_bmi_category(df, column="_BMI5CAT", new_column="BMI_CAT")
-# -------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 
 def test_recode_bmi_category():
@@ -254,3 +255,29 @@ def test_recode_bmi_category_raises_on_new_column_wrong_type():
         ValueError, match="`new_column` must be a string, got <class 'int'>"
     ):
         pp.recode_bmi_category(df, column="_BMI5CAT", new_column=7)
+
+
+# ------------------------------------------------------------------------------
+# testing def move_column_to_end(df, column)
+# ------------------------------------------------------------------------------
+def test_move_column_to_end_moves_column():
+    df = pd.DataFrame({"a": [1], "b": [2], "c": [3]})
+    result = pp.move_column_to_end(df, "b")
+    assert list(result.columns) == ["a", "c", "b"]
+
+
+def test_move_column_to_end_ignores_missing_column():
+    df = pd.DataFrame({"a": [1], "b": [2]})
+    result = pp.move_column_to_end(df, "z")
+    assert list(result.columns) == ["a", "b"]
+
+
+def test_move_column_to_end_raises_on_non_dataframe():
+    with pytest.raises(ValueError, match="`df` must be a pandas DataFrame"):
+        pp.move_column_to_end("not_a_df", "a")
+
+
+def test_move_column_to_end_raises_on_non_string_column():
+    df = pd.DataFrame({"a": [1]})
+    with pytest.raises(ValueError, match="`column` must be a string"):
+        pp.move_column_to_end(df, 5)
