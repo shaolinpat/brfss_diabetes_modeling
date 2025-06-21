@@ -6,7 +6,7 @@ import pytest
 import sys
 from unittest.mock import patch, MagicMock
 
-from brfss_diabetes.io import get_csv, finalize_columns
+from brfss_diabetes.io import get_csv, load_all_years, finalize_columns
 
 
 # ------------------------------------------------------------------------------
@@ -47,6 +47,47 @@ def test_get_csv_reads_from_github_in_colab(monkeypatch):
         assert df.equals(mock_df)
         mock_read_csv.assert_called_once()
         assert "raw.githubusercontent.com" in mock_read_csv.call_args[0][0]
+
+
+# ------------------------------------------------------------------------------
+# testing def load_all_years(years, data_dir=Path("../data/cleaned"))
+# ------------------------------------------------------------------------------
+def test_load_all_years_raises_on_years_not_list():
+    with pytest.raises(ValueError, match="`years` must be a list of integers"):
+        load_all_years("2020")  # string instead of list
+
+
+def test_load_all_years_raises_on_years_with_non_int():
+    with pytest.raises(ValueError, match="`years` must be a list of integers"):
+        load_all_years([2020, "2021", 2022])  # one item is a string
+
+
+def test_load_all_years_on_invalid_data_dir_type():
+    with pytest.raises(ValueError, match="`data_dir` must be a pathlib.Path"):
+        load_all_years([2020], data_dir="not_a_path")
+
+
+def test_load_all_years_on_missing_diabetes_column():
+    # Simulate a DataFrame without 'diabetes' column
+    mock_df = pd.DataFrame({"feature": [1, 2]})
+
+    with patch("brfss_diabetes.io.get_csv", return_value=mock_df):
+        with pytest.raises(ValueError, match="'diabetes' column missing in 2020"):
+            load_all_years([2020])
+
+
+def test_load_all_years_reads_and_merges(monkeypatch):
+    mock_df = pd.DataFrame({"feature": [1, 2], "diabetes": [0, 1]})
+
+    # Patch get_csv to return mock_df for any year
+    with patch("brfss_diabetes.io.get_csv", return_value=mock_df) as mock_get_csv:
+        result = load_all_years([2019, 2020, 2021])
+
+        assert isinstance(result, pd.DataFrame)
+        assert result.shape[0] == 6  # 2 rows * 3 years
+        assert "diabetes" in result.columns
+        assert result.columns[-1] == "diabetes"  # diabetes should be last column
+        assert mock_get_csv.call_count == 3
 
 
 # ------------------------------------------------------------------------------

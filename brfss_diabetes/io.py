@@ -4,6 +4,8 @@ import pandas as pd
 import sys
 from pathlib import Path
 
+from .preprocessing import move_column_to_end
+
 
 def get_csv(year, data_dir=Path("../data/cleaned")):
     """
@@ -32,6 +34,36 @@ def get_csv(year, data_dir=Path("../data/cleaned")):
         path = Path(data_dir / filename)
         print(f"[Local] Loading from: {path}")
         return pd.read_csv(path, low_memory=False)
+
+
+def load_all_years(years, data_dir=Path("../data/cleaned")):
+    """
+    Load and merge cleaned BRFSS CSV files for multiple years.
+
+    Parameters:
+        years (list of int): List of years to load.
+        data_dir (Path): Directory containing cleaned CSVs.
+
+    Returns:
+        pd.DataFrame: Combined DataFrame with 'diabetes' column at end.
+    """
+    if not isinstance(years, list) or not all(isinstance(y, int) for y in years):
+        raise ValueError("`years` must be a list of integers")
+
+    if not isinstance(data_dir, Path):
+        raise ValueError(f"`data_dir` must be a pathlib.Path, got {type(data_dir)}")
+
+    dfs = []
+    for year in years:
+        df = get_csv(year, data_dir=data_dir)
+
+        if "diabetes" not in df.columns:
+            raise ValueError(f"'diabetes' column missing in {year}")
+
+        dfs.append(df)
+
+    df_all = pd.concat(dfs, ignore_index=True)
+    return move_column_to_end(df_all, "diabetes")
 
 
 def finalize_columns(df, keep_cols: list[str]) -> pd.DataFrame:
