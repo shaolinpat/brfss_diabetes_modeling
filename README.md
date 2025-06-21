@@ -4,7 +4,9 @@
 [![Coverage (flag)](https://img.shields.io/codecov/c/github/shaolinpat/brfss_diabetes_modeling.svg?flag=flower_classifier&branch=main)](https://codecov.io/gh/shaolinpat/brfss_diabetes_modeling)  
 [![Python 3.11](https://img.shields.io/badge/python-3.11-blue.svg)](https://www.python.org/downloads/release/python-3110/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/shaolinpat/brfss_diabetes_modeling/blob/main/notebooks/00_logistic_regression_all_years.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/shaolinpat/brfss_diabetes_modeling/blob/main/notebooks/00_logistic_regression_all_years.ipynb?force_reload=true)
+
+
 
 An end-to-end Iris-dataset classifier with EDA, 8 models, SHAP interpretation, and a Streamlit UI.
 
