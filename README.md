@@ -6,7 +6,6 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/shaolinpat/brfss_diabetes_modeling/blob/main/notebooks/00_logistic_regression_all_years.ipynb)
 
-
 An end-to-end Iris-dataset classifier with EDA, 8 models, SHAP interpretation, and a Streamlit UI.
 
 ---
