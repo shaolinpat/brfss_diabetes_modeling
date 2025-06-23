@@ -281,3 +281,70 @@ def test_move_column_to_end_raises_on_non_string_column():
     df = pd.DataFrame({"a": [1]})
     with pytest.raises(ValueError, match="`column` must be a string"):
         pp.move_column_to_end(df, 5)
+
+
+# ------------------------------------------------------------------------------
+# testing def prepare_common_features(
+#   df: pd.DataFrame, common_features: list[str])
+#   -> pd.DataFrame
+# ------------------------------------------------------------------------------
+
+sample_df = pd.DataFrame(
+    {
+        "age": [34, 45, None, 65],
+        "sex": ["Male", "Female", "Female", "Male"],
+        "educa": ["High school", "College", "High school", None],
+        "bmi": [24.5, 30.1, 28.0, 26.7],
+        "bmi_cat": ["Normal", "Obese", "Overweight", "Overweight"],
+        "smoke_100": ["Yes", "No", "No", "Yes"],
+        "exercise_any": ["Yes", "No", "Yes", "No"],
+        "diabetes": ["No", "Yes", "No", "Yes"],
+    }
+)
+
+
+common_features = ["age", "sex", "educa", "bmi", "bmi_cat", "smoke_100", "exercise_any"]
+
+
+def test_prepare_common_features_valid():
+    df = sample_df.dropna(subset=common_features + ["diabetes"])
+    result = pp.prepare_common_features(df, common_features)
+    assert isinstance(result, pd.DataFrame)
+    assert "diabetes" in result.columns
+    assert set(result["diabetes"].unique()) <= {0, 1}
+    assert not result.drop(columns=["diabetes"]).isna().any().any()
+
+
+def test_prepare_common_features_invalid_df_type():
+    with pytest.raises(ValueError, match="`df` must be a pandas DataFrame"):
+        pp.prepare_common_features("not a dataframe", common_features)
+
+
+def test_prepare_common_features_invalid_common_features_type():
+    with pytest.raises(ValueError, match="`common_features` must be a list of strings"):
+        pp.prepare_common_features(sample_df, "not a list")
+
+
+def test_prepare_common_features_missing_columns():
+    df_missing = sample_df.drop(columns=["bmi_cat"])
+    with pytest.raises(ValueError, match="missing from the DataFrame"):
+        pp.prepare_common_features(df_missing, common_features)
+
+
+def test_prepare_common_features_missing_target():
+    df_no_diabetes = sample_df.drop(columns=["diabetes"])
+    with pytest.raises(ValueError, match="Missing required target column: 'diabetes'"):
+        pp.prepare_common_features(df_no_diabetes, common_features)
+
+
+def test_prepare_common_features_warns_on_unexpected_binary_values(capfd):
+    # Create a sample DataFrame with an unexpected value
+    df_unexpected = sample_df.copy()
+    df_unexpected.loc[0, "smoke_100"] = "Maybe"
+
+    # Run the function — it should print a warning
+    result = pp.prepare_common_features(df_unexpected, common_features)
+
+    # Capture the printed output
+    captured = capfd.readouterr()
+    assert "Warning: Unexpected values found in column smoke_100" in captured.out

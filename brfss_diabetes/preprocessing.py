@@ -238,3 +238,61 @@ def move_column_to_end(df, column):
         return df
     cols = [col for col in df.columns if col != column] + [column]
     return df[cols]
+
+
+def prepare_common_features(
+    df: pd.DataFrame, common_features: list[str]
+) -> pd.DataFrame:
+    """
+    Filters the DataFrame to only include rows with non-null values for the given features
+    and the target, and applies encoding for binary and categorical features.
+
+    Parameters:
+        df (pd.DataFrame): Full merged BRFSS DataFrame.
+        common_features (list[str]): List of feature names common across all years.
+
+    Returns:
+        pd.DataFrame: Processed DataFrame with dummy variables and binary encoding.
+    """
+    if not isinstance(df, pd.DataFrame):
+        raise ValueError(f"`df` must be a pandas DataFrame, got {type(df)}")
+
+    if not isinstance(common_features, list) or not all(
+        isinstance(f, str) for f in common_features
+    ):
+        raise ValueError("`common_features` must be a list of strings")
+
+    if "diabetes" not in df.columns:
+        raise ValueError("Missing required target column: 'diabetes'")
+
+    missing_columns = [col for col in common_features if col not in df.columns]
+    if missing_columns:
+        raise ValueError(
+            f"The following common_features are missing from the DataFrame: {missing_columns}"
+        )
+
+    df_common = df.copy()
+
+    # Drop rows with missing values in required features + target
+    df_common = df_common.dropna(subset=common_features + ["diabetes"])
+    df_common = df_common[common_features + ["diabetes"]].copy()
+
+    # Binary yes/no encoding
+    binary_cols = ["smoke_100", "exercise_any", "diabetes"]
+    for col in binary_cols:
+        if col in df_common.columns:
+            df_common[col] = (
+                df_common[col]
+                .astype(str)
+                .str.strip()
+                .str.replace('"', "", regex=False)
+                .map({"Yes": 1, "No": 0})
+            )
+            if df_common[col].isna().any():
+                print(f"Warning: Unexpected values found in column {col}")
+
+    # One-hot encode categorical vars
+    cat_cols = [col for col in ["sex", "educa", "bmi_cat"] if col in df_common.columns]
+    df_common = pd.get_dummies(df_common, columns=cat_cols, drop_first=True)
+
+    return df_common
